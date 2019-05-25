@@ -1,6 +1,6 @@
 import numpy as np
 
-class Grid:
+class Board:
 	def __init__(self, rows, cols):
 		self.rows = rows
 		self.cols = cols
@@ -8,7 +8,7 @@ class Grid:
 
 
 	def copy(self):
-		copy = Grid(self.rows, self.cols)
+		copy = Board(self.rows, self.cols)
 		copy.cells = np.ndarray.copy(self.cells)
 		return copy
 
@@ -71,9 +71,9 @@ class Grid:
 
 
 
-# test = Grid(4, 4)
+# test = Board(4, 4)
 # print(test.cells)
-# print(test.clone().cells)
+# print(test.copy().cells)
 # print(test.isLine(0))
 # print(test.isEmptyRow(2))
 # for col in range(test.cols):
