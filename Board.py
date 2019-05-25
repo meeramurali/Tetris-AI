@@ -70,6 +70,23 @@ class Board:
 		return num_lines
 
 
+	def get_column_ht(self, col):
+		num_empty_rows = 0
+		row = 0
+		while row < self.rows and self.cells[row][col] == 0:
+			num_empty_rows += 1
+			row += 1
+
+		# Height = total no. of rows - no. of empty rows
+		return self.rows - num_empty_rows
+
+
+	def get_aggregate_ht(self):
+		agg_ht = 0
+		for col in range(self.cols):
+			agg_ht += self.get_column_ht(col)
+		return agg_ht
+
 
 # test = Board(4, 4)
 # print(test.cells)
@@ -82,13 +99,15 @@ class Board:
 # 	if col != 0:
 # 		test.cells[2][col] = 1
 # print(test.cells)
-# test.clearLines()
+# # test.clearLines()
 # print(test.cells)
-# test.cells = np.ones((4, 4), dtype= int)
+# # test.cells = np.ones((4, 4), dtype= int)
 # print(test.exceeded())
 # print(test.cells)
 # print(test.get_height())
 # print(test.get_num_lines())
+# print(test.get_column_ht(0))
+# print(test.get_aggregate_ht())
 
 
 
