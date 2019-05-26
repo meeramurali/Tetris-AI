@@ -10,4 +10,3 @@
 - [ ] GA_ParameterTuner *(tunes parameters using a genetic algorithm)*
 ### Putting both parts together
 - [ ] TetrisAI *(Simulates game being played by the AI; uses pygame to render components)*
-- [x] Board *(manages the game board i.e. grid of cells)*
