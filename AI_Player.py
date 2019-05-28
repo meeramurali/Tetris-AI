@@ -1,5 +1,3 @@
-import random
-
 # Dummy class for testing
 # To be modfied with actual functions 
 class AI_Player:
