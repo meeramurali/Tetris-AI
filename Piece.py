@@ -10,28 +10,28 @@ class Piece:
         self.col = 0
 
     
-    def select_piece(index):
+    def select_piece(self, index):
         
         if index == 0:
-            piece = Piece([[3,3],[3,3]])
+            piece = Piece(np.array([[3,3],[3,3]]))
         
         elif index == 1:
-            piece = Piece([[1,0,0],[1,1,1],[0,0,0]])
+            piece = Piece(np.array([[1,0,0],[1,1,1],[0,0,0]]))
             
         elif index == 2:
-            piece = Piece([[0,0,2],[2,2,2],[0,0,0]])
+            piece = Piece(np.array([[0,0,2],[2,2,2],[0,0,0]]))
             
         elif index == 3:
-             piece = Piece([[4,4,0],[0,4,4],[0,0,0]])
+             piece = Piece(np.array([[4,4,0],[0,4,4],[0,0,0]]))
                 
         elif index == 4:
-             piece = Piece([[0,5,5],[5,5,0],[0,0,0]])
+             piece = Piece(np.array([[0,5,5],[5,5,0],[0,0,0]]))
                 
         elif index == 5:
-             piece = Piece([[0,6,0],[6,6,6],[0,0,0]])
+             piece = Piece(np.array([[0,6,0],[6,6,6],[0,0,0]]))
                 
         elif index == 6:
-             piece = Piece([[0,0,0,0],[7,7,7,7],[0,0,0,0],[0,0,0,0]])
+             piece = Piece(np.array([[0,0,0,0],[7,7,7,7],[0,0,0,0],[0,0,0,0]]))
         
         piece.row = 0
         piece.col = math.floor((10 - piece.dimension) / 2)
@@ -155,7 +155,8 @@ class Piece:
         temp_piece.rotateCells()
         
         if board.isValidPiece(temp_piece):
-            return {rowOffset: temp_piece.row - self.row, columnOffset: temp_piece.col - self.col}
+            offset = {'rowOffset': temp_piece.row - self.row, 'columnOffset': temp_piece.col - self.col}
+            return offset
         
         initialRow = temp_piece.row
         initialCol = temp_piece.col
@@ -164,29 +165,34 @@ class Piece:
         for i in range(self.dimension):
             temp_piece.col = initialCol + i
             if board.isValidPiece(temp_piece):
-                return {rowOffset: temp_piece.row - self.row, columnOffset: temp_piece.col - self.col}
+                offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col} 
+                return offset
             
             for j in range(self.dimension):
                 temp_piece.row = initialRow - j
                 if board.isValidPiece(temp_piece):
-                    return {rowOffset: temp_piece.row - self.row, columnOffset: temp_piece.col - self.col}
+                    offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
+                    return offset
+                
             temp_piece.row = initialRow
             
         temp_piece.col = initialCol
         
         
         for i in range(self.dimension):
-            temp_piece.column = initialCol - i
+            temp_piece.col = initialCol - i
             if board.isValidPiece(temp_piece):
-                return {rowOffset: temp_piece.row - self.row, columnOffset: temp_piece.column - self.column}
+                offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
+                return offset
             
             for j in range(self.dimension):
                 temp_piece.row = initialRow - j
                 if board.isValidPiece(temp_piece):
-                    return {rowOffset: temp_piece.row - self.row, columnOffset: temp_piece.column - self.column}
+                    offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
+                    return offset
             temp_piece.row = initialRow
             
-        temp_piece.column = initialCol
+        temp_piece.col = initialCol
         
         
         return None
@@ -195,9 +201,9 @@ class Piece:
         offset = self.calculateOffset(board)
         
         if offset != None:
-            self.rotateCells(board)
-            self.row = self.row + offset.rowOffset
-            self.column = self.column + offset.columnOffset
+            self.rotateCells()
+            self.row = self.row + offset['rowOffset']
+            self.col = self.col + offset['columnOffset']
                     
                 
     
