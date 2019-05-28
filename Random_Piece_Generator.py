@@ -1,31 +1,33 @@
-#import Piece
-import random
-import math
+from Piece import *
 
-class randomPieceGenerator:
+class Random_Piece_Generator:
 
     def __init__(self):
-        random.seed()
-        self.bag = [0, 1, 2, 3, 4, 5, 6]
+        self.bag = np.arange(7)
         self.shuffleBag()
         self.index = -1
 
+
     def nextPiece(self):
-        self.index += self.index
+        self.index += 1
         if self.index >= len(self.bag):
             self.shuffleBag()
             self.index = 0
 
-#        return Piece.fromIndex(self.bag[self.index])
+        return Piece().select_piece(self.bag[self.index])
+
 
     def shuffleBag(self):
-        currentIndex = len(self.bag)
-
-        while 0 != currentIndex:
-            randomIndex = math.floor(random.randint() * currentIndex)
-            currentIndex -= 1
-            tempVal = self.bag[currentIndex]
-            self.bag[currentIndex] = self.bag[randomIndex]
-            self.bag[randomIndex]  = tempVal
+        np.random.shuffle(self.bag)
 
 
+# test = Random_Piece_Generator()
+# print(test.bag)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)
+# print(test.nextPiece().cells)

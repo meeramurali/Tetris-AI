@@ -3,7 +3,7 @@ import math
 
 class Piece:
     
-    def __init__(self, cells):
+    def __init__(self, cells=np.empty(0)):
         self.cells = cells
         self.dimension = cells.shape[0]
         self.row = 0 

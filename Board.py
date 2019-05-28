@@ -1,5 +1,5 @@
 import numpy as np
-
+from Piece import *
 
 class Board:
 	def __init__(self, rows, cols):
@@ -165,7 +165,7 @@ class Board:
 # print(test.cells)
 # # test.clearLines()
 # print(test.cells)
-# test.cells = np.ones((10, 10), dtype= int)
+# # test.cells = np.ones((10, 10), dtype= int)
 # print("is_Full", test.isFull())
 # # test.clearLines()
 # print(test.cells)
@@ -177,13 +177,14 @@ class Board:
 # print(test.get_bumpiness())
 # print(test.get_blockage_count())
 
-# class testPiece:
-# 	def __init__(self, row, col):
-# 		self.cells = np.ones((2,2))
-# 		self.row = row
-# 		self.col = col
+# # class testPiece:
+# # 	def __init__(self, row, col):
+# # 		self.cells = np.ones((2,2))
+# # 		self.row = row
+# # 		self.col = col
 
-# test_piece = testPiece(5, 8)
+# pcells = np.ones((2,2))
+# test_piece = Piece(pcells)
 # if test.isValidPiece(test_piece):
 # 	test.addPiece(test_piece)
 # 	print(test.cells)

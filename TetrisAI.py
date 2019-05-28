@@ -63,17 +63,23 @@ class TetrisAI:
 					pygame.display.update()
 
 
-# import numpy as np
 # class testPiece:
 # 	def __init__(self, cells, row, col):
 # 		self.cells = np.array(cells)
 # 		self.row = row
 # 		self.col = col
-# p1 = testPiece([[0, 2, 0], [2, 2, 2], [0, 0, 0]], BoardNumRows - 2, 0)
-# p2 = testPiece([[0, 1, 0], [1, 1, 1], [0, 0, 0]], BoardNumRows - 2, 3)
 
 # test = TetrisAI()
+# pcells = np.array([[0,0,0,0],[7,7,7,7],[0,0,0,0],[0,0,0,0]])
+# p1 = Piece(pcells)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
 # test.board.addPiece(p1)
+
+# p2 = Piece().select_piece(2)
+# p2.rotate(test.board)
 # test.board.addPiece(p2)
 # test.run()
 
