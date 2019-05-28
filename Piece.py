@@ -42,8 +42,8 @@ class Piece:
         copy_cells = np.empty_like (self.cells)
         copy_cells[:] = self.cells
         piece = Piece(copy_cells)
-        piece.row = self.cells.shape[0]
-        piece.colum = self.cells.shape[1]
+        piece.row = self.row
+        piece.col = self.col
         return piece
         
     
