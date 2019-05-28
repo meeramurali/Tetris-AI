@@ -73,6 +73,7 @@ class TetrisAI:
 
 			# Check if game over
 			if self.board.isFull():
+				print("Score:", self.score)
 				print("Game Over!")
 				running = False
 
