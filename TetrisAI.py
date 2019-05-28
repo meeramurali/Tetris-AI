@@ -1,4 +1,6 @@
 from Board import *
+from Random_Piece_Generator import *
+from AI_Player import *
 import pygame
 
 CellSize = 20
@@ -20,10 +22,17 @@ colors = {
 class TetrisAI:
 	def __init__(self):
 		self.board = Board(BoardNumRows, BoardNumCols)
+		self.piece_generator = Random_Piece_Generator()
+		self.curr_piece_list = [self.piece_generator.nextPiece()]
+		self.curr_piece = None
+		self.ai_agent = AI_Player()
+		self.score = 0
+
 
 	def quit(self):
 		# TODO: display exit message
 		pygame.quit()
+
 
 	def run(self):
 		pygame.init()
@@ -32,14 +41,43 @@ class TetrisAI:
 		self.window = pygame.display.set_mode((BoardNumCols * CellSize, BoardNumRows * CellSize))
 		pygame.display.set_caption("TetrisAI")
 		self.window.fill(colors[0])
-		pygame.display.update()
 
 		running = True
 		while running:
 			# Render board
-			self.draw(self.board.cells, 0, 0)
-			pygame.display.update()
+			# self.draw(self.board.cells, 0, 0)
+			# pygame.display.update()
 
+			self.curr_piece_list.pop(0)
+			self.curr_piece_list.append(self.piece_generator.nextPiece())
+
+			# Get next best piece position
+			self.curr_piece = self.ai_agent.best(self.board, self.curr_piece_list)
+
+			# Drop piece
+			reached_bottom = False
+			while not reached_bottom:
+				if not self.curr_piece.moveDown(self.board):
+					reached_bottom = True
+				else:
+					self.window.fill(colors[0])
+					self.draw(self.board.cells, 0, 0)
+					self.draw(self.curr_piece.cells, self.curr_piece.row, self.curr_piece.col)
+					# pygame.display.update()
+
+			# Add current piece to board
+			self.board.addPiece(self.curr_piece)
+
+			# Clear lines
+			self.score += self.board.clearLines()
+
+			# Check if game over
+			if self.board.isFull():
+				print("Score:", self.score)
+				print("Game Over!")
+				running = False
+
+			# Quit if window closed by player
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
@@ -63,17 +101,27 @@ class TetrisAI:
 					pygame.display.update()
 
 
-# import numpy as np
+
 # class testPiece:
 # 	def __init__(self, cells, row, col):
 # 		self.cells = np.array(cells)
 # 		self.row = row
 # 		self.col = col
-# p1 = testPiece([[0, 2, 0], [2, 2, 2], [0, 0, 0]], BoardNumRows - 2, 0)
-# p2 = testPiece([[0, 1, 0], [1, 1, 1], [0, 0, 0]], BoardNumRows - 2, 3)
 
 # test = TetrisAI()
+# pcells = np.array([[0,0,0,0],[7,7,7,7],[0,0,0,0],[0,0,0,0]])
+# p1 = Piece(pcells)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
+# p1.rotate(test.board)
 # test.board.addPiece(p1)
+
+# p2 = Piece().select_piece(2)
+# p2.rotate(test.board)
 # test.board.addPiece(p2)
 # test.run()
 
+test1 = TetrisAI()
+# print(test1.ai_agent.best(test1.board, test1.curr_piece_list))
+test1.run()
