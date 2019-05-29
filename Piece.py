@@ -162,13 +162,13 @@ class Piece:
         initialCol = temp_piece.col
         
         
-        for i in range(self.dimension -2):
+        for i in range(self.dimension - 1):
             temp_piece.col = initialCol + i
             if board.isValidPiece(temp_piece):
                 offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col} 
                 return offset
             
-            for j in range(self.dimension - 2):
+            for j in range(self.dimension - 1):
                 temp_piece.row = initialRow - j
                 if board.isValidPiece(temp_piece):
                     offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
@@ -179,13 +179,13 @@ class Piece:
         temp_piece.col = initialCol
         
         
-        for i in range(self.dimension - 2):
+        for i in range(self.dimension - 1):
             temp_piece.col = initialCol - i
             if board.isValidPiece(temp_piece):
                 offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
                 return offset
             
-            for j in range(self.dimension - 2):
+            for j in range(self.dimension - 1):
                 temp_piece.row = initialRow - j
                 if board.isValidPiece(temp_piece):
                     offset = {'rowOffset' : temp_piece.row - self.row, 'columnOffset' : temp_piece.col - self.col}
