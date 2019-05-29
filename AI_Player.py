@@ -14,7 +14,7 @@ class AI_Player:
 		best_score = 0
 		currentPiece = workingPieces[currentPieceIndex]
 		
-		for rotation in range(3):
+		for rotation in range(4):
 			piece = currentPiece.clone()
 			for i in range(rotation):
 				piece.rotate(board)
@@ -27,11 +27,11 @@ class AI_Player:
 				
 				while(pieceSet.moveDown(board)):
 				    pass
-				temp_board = board.clone()
+				temp_board = board.copy()
 				temp_board.addPiece(pieceSet)
 				
 				score = 0
-				if currentPieceIndex == workingPieces.shape[0] - 1:
+				if currentPieceIndex == len(workingPieces) - 1:
 					score = - self.heightWt * temp_board.get_aggregate_ht() + self.linesWt * temp_board.get_num_lines() - self.holesWt * temp_board.get_holes_count() - self.bumpinessWt * temp_board.get_bumpiness()
 				else:
 					best_move = self.get_best_move(temp_board, workingPieces, currentPieceIndex + 1)

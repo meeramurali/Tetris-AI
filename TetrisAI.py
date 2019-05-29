@@ -25,7 +25,7 @@ class TetrisAI:
 		self.piece_generator = Random_Piece_Generator()
 		self.curr_piece_list = [self.piece_generator.nextPiece()]
 		self.curr_piece = None
-		self.ai_agent = AI_Player()
+		self.ai_agent = AI_Player(0.5, 1, 0.5, 1)
 		self.score = 0
 
 
@@ -52,12 +52,12 @@ class TetrisAI:
 			self.curr_piece_list.append(self.piece_generator.nextPiece())
 
 			# Get next best piece position
-			self.curr_piece = self.ai_agent.best(self.board, self.curr_piece_list)
+			self.curr_piece = self.ai_agent.select_move(self.board, self.curr_piece_list)
 
 			# Drop piece
 			reached_bottom = False
 			while not reached_bottom:
-				if not self.curr_piece.moveDown(self.board):
+				if self.curr_piece is not None and not self.curr_piece.moveDown(self.board):
 					reached_bottom = True
 				else:
 					self.window.fill(colors[0])
