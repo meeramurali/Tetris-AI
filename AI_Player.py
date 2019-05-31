@@ -32,7 +32,10 @@ class AI_Player:
 				
 				score = 0
 				if currentPieceIndex == len(workingPieces) - 1:
-					score = - self.heightWt * temp_board.get_aggregate_ht() + self.linesWt * temp_board.get_num_lines() - self.holesWt * temp_board.get_holes_count() - self.bumpinessWt * temp_board.get_bumpiness()
+					score = - self.heightWt * temp_board.get_aggregate_ht() \
+						+ self.linesWt * temp_board.get_num_lines() \
+						- self.holesWt * temp_board.get_holes_count() \
+						- self.bumpinessWt * temp_board.get_bumpiness()
 				else:
 					best_move = self.get_best_move(temp_board, workingPieces, currentPieceIndex + 1)
 					score = best_move['score']
