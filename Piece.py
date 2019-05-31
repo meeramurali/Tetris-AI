@@ -31,7 +31,7 @@ class Piece:
              piece = Piece(np.array([[0,6,0],[6,6,6],[0,0,0]]))
                 
         elif index == 6:
-             piece = Piece(np.array([[0,0,0,0],[7,7,7,7],[0,0,0,0],[0,0,0,0]]))
+             piece = Piece(np.array([[0,7,0,0],[0,7,0,0],[0,7,0,0],[0,7,0,0]]))
         
         piece.row = 0
         piece.col = math.floor((10 - piece.dimension) / 2)
