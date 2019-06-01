@@ -1,161 +1,118 @@
-from AI_Player import *
-from Random_Piece_Generator import *
+from Candidate import *
 import math
-import random
-import collections
-class Tuner:
 
-    def __init__(self):
-            self.candidate = {"heightWeight": random.random() - 0.5,
-                              "linesWeight" : random.random() - 0.5,
-                              "holesWeight" : random.random() - 0.5,
-                              "bumpinessWeight" : random.random() - 0.5 }
-
-
-    def randomInteger(self,min,max):
-        return random.random() * (max-min) + min
-    
-    def normalize(self,**candidate):
-        norm = math.sqrt(candidate['heightWeight'] * candidate['heightWeight'] + candidate['linesWeight'] * candidate['linesWeight'] +
-                         candidate['holesWeight'] * candidate['holesWeight'] + candidate['bumpinessWeight']*candidate['bumpinessWeight'] )
-        print(norm)
-        candidate['heightWeight'] /= norm
-        candidate['linesWeight']= norm
-        candidate['holesWeight'] /= norm
-        candidate['bumpinessWeight'] /= norm
-        print(candidate)
-
-    def generateRandomcandidate(self):
-        candidate = {'heightWeight': random.random() - 0.5,
-                     'linesWeight' : random.random() - 0.5,
-                     'holesWeight': random.random() - 0.5,
-                     'bumpinessWeight' : random.random() - 0.5 }
-        print(candidate)
-        self.normalize(**candidate)
-
-        return candidate
-    
-    def candidateSort(self,candidates):
-        #sorted_x = [int(v) for k,v  in candidates[0].items()]
-        self.candidates = sorted(candidates, key=lambda kv: (kv['bumpinessWeight'],kv['holesWeight'],kv['linesWeight'],kv['heightWeight']),reverse=True)
-
-    def computeFitness(self,candidates, numberOfGames, maxNumberOfMoves):
-
-        for i in range(len(candidates)):
-            self.candidate = candidates[i]
-            self.ai = AI_Player(self.candidate['heightWeight'], self.candidate['linesWeight'], self.candidate['holesWeight'], self.candidate['bumpinessWeight'])
-            self.totalScore = 0
-            for j in range(numberOfGames) :
-                self.grid = Board(22,10)
-                rpg = Random_Piece_Generator()
-                self.workingPieces = [rpg.nextPiece(),rpg.nextPiece()]
-                self.workingPiece = self.workingPieces[0]
-                self.score = 0
-                numberOfMoves = 0
-                numberOfMoves += 1
-                while (numberOfMoves < maxNumberOfMoves) and not self.grid.isFull():
-                   self.workingPiece = self.ai.select_move(self.grid, self.workingPieces)
-                   reached_end = False
-                   while not reached_end and self.workingPiece is not None:
-                       if not self.workingPiece.moveDown(self.grid):
-                           reached_end = True
-                   if self.workingPiece is not None:
-                       self.grid.addPiece(self.workingPiece)
-                   self.score += self.grid.clearLines()
-                   for k in range(len(self.workingPieces)-1):
-                    self.workingPieces[k] = self.workingPieces[k+1]
-                   self.workingPieces[len(self.workingPieces)-1] = rpg.nextPiece()
-                   self.workingPiece = self.workingPieces[0]
-                self.totalScore += self.score
-                print(self.totalScore)
-            fitness = self.totalScore
-
-    def tournamentselectPair(self,candidates,ways):
-        indices = []
-        for i in range(len(candidates)):
-            indices.append(i)
-        fittestCandidateIndex1 = None
-        fittestCandidateIndex2 = None
-        for i in range(ways):
-            splicenum = math.floor(self.randomInteger(0,len(indices)))
-            print('splicenum is ', splicenum)
-            selectedIndex = indices[splicenum:1]
-            print(selectedIndex)
-            if(fittestCandidateIndex1 == None or selectedIndex[0] < fittestCandidateIndex1 ):
-                fittestCandidateIndex2 = fittestCandidateIndex1
-                fittestCandidateIndex1 = selectedIndex[0]
-            elif(fittestCandidateIndex2 == None or selectedIndex[0] < fittestCandidateIndex2):
-                fittestCandidateIndex2 = selectedIndex[0]
-        print(fittestCandidateIndex1)
-        print(fittestCandidateIndex2)
-        return[candidates[fittestCandidateIndex1],candidates[fittestCandidateIndex2]]
-
-    def crossOver(self,candidate1,candidate2):
-        candidate = { "heightWeight": candidate1.fitness * candidate1.heightWeight + candidate2.fitness * candidate2.heightWeight,
-                      "linesWeight": candidate1.fitness * candidate1.linesWeight + candidate2.fitness * candidate2.linesWeight,
-                      "holesWeight": candidate1.fitness * candidate1.holesWeight + candidate2.fitness * candidate2.holesWeight,
-                      "bumpinessWeight": candidate1.fitness * candidate1.bumpinessWeight + candidate2.fitness * candidate2.bumpinessWeight
-        }                    
-        normalize(candidate)
-        return candidate
-    
-    def mutate(self,candidate):
-        quantity = random.randint() * 0.4 - 0.2
-        
-        mutateelement = self.randomInteger(0,4)
-
-        if(mutateelement ==0):
-            candidate.heightWeight += quantity
-        elif(mutateelement == 1):
-            candidate.linesWeight += quantity
-        elif(mutateelement == 2):
-            candidate.holesWeight += quantity
-        elif(mutateelement == 3):
-            candidate.bumpinessWeight += quantity
-
-   # def deleteNLastReplacement(self,candidates,newCandidates):
-   #     candidates.splice(-len(newCandidates))
-    #    for i in range(len(newCandidates)):
-    #        candidates.append(newCandidates[i])
-    #    candidateSort(candidates)
-       
-
-    def tune(self):
-        self.candidates = []
-        for i in range(2):
-            self.candidates.append(self.generateRandomcandidate())
-        print('computing the fitness of initial population')
-        print(self.candidates)
-        self.computeFitness(self.candidates,1,2)
-        print(self.candidates)
-        self.candidateSort(self.candidates)
-        count = 0
-        print('Initial fitness computed')
-        while True:
-            newCandidates = []
-            for i in range(5):
-                pair = self.tournamentselectPair(self.candidates,10)
-                candidate = self.crossOver(pair[0],pair[1])
-                if random.random() < 0.05:
-                    self.mutate(candidate)
-                normalize(self.candidate)
-                newCandidates.append(candidate)
-            print('Computing fitnesses of new candidates:', count)
-            self.computeFitness(newCandidates,2,10)
-            print('computed the fitness')
-         #   deleteNLastReplacement(candidates,newCandidates)
-            totalFitness = 0
-            for i in range(len(self.candidates)):
-                totalFitness += self.candidates[i].fitness
-            print('Average Fitness', (totalFitness/len(self.candidates)))
-           # print('Highest Fitness', candidates[0].fitness)
-            count += 1
+Popln_Size = 20
+Max_Generations = 1000
+Mutation_percent = 5
+Num_Games = 2		# to compute fitness for each candidate
+Max_Moves = 200		# to compute fitness for each candidate
+N_percent = 30		# for delete-n-last replacement. n will be N_percent of Popln_Size
+Max_Fitness = Num_Games * Max_Moves * 4 / 10
 
 
-test1 = Tuner()
-test1.tune()
+class GA_ParametersGenerator:
+
+	def __init__(self):
+		self.population = self.initPopulation()
+		self.population = self.sortCandidatesByFitness(self.population)
+		self.avg_fitness = self.getAvgFitness()
 
 
+	def initPopulation(self):
+		popln = []
+		for i in range(Popln_Size):
+			popln.append(Candidate(num_games=Num_Games, max_moves=Max_Moves))
+		return popln
 
 
+	def printPopln(self):
+		print("---------------------")
+		for each in self.population:
+			print(each, "(fitness", each.get_fitness(), ")")
+		print("---------------------")
 
+
+	def sortCandidatesByFitness(self, candidates):
+		return sorted(candidates, key=lambda x: x.get_fitness(), reverse=True)
+
+
+	def getAvgFitness(self):
+		sumFitness = 0
+		for x in self.population:
+			sumFitness += x.get_fitness()
+
+		return sumFitness / Popln_Size 
+
+
+	def tournamentSelection(self):
+		# Randomly sample 10% of the population
+		size_10percent = math.floor((10 / 100) * Popln_Size)
+		sample_10percent_indices = np.random.randint(0, Popln_Size, size_10percent)
+
+		# Population assumed to be pre-sorted by fitness
+		# So to pick best 2 candidates from the 10% sample, just pick smallest 2 indices
+		sample_10percent_indices = sorted(sample_10percent_indices)
+		best1 = sample_10percent_indices[0]
+
+		if len(sample_10percent_indices) > 1:
+			best2 = sample_10percent_indices[1]
+			return self.population[best1], self.population[best2]
+
+		return self.population[best1]
+
+
+	def deleteNLastReplacement(self, N_offsprings):
+		N = len(N_offsprings)
+		self.population = self.population[0:-N] + N_offsprings
+
+
+	def generateNewPopulation(self):	
+		offsprings = []
+		N = (N_percent / 100) * Popln_Size
+		num_offsprings = 0
+
+		# Repeat until we have N offsprings
+		while num_offsprings < N:
+			# Select parents via tournament selection
+			parent1, parent2 = self.tournamentSelection()
+
+			# Create offspring via crossover
+			offspring = Candidate(parent1.crossover(parent2), num_games=Num_Games, max_moves=Max_Moves)
+
+			# Mutate if required
+			if (random.random() < (Mutation_percent / 100)):
+				print("Mutation!")
+				offspring.mutate()
+
+			# print("parent1", parent1)
+			# print("parent2", parent2)
+			# print("offspring", offspring)
+
+			offsprings.append(offspring)
+			num_offsprings += 1
+
+		# Replace N weakest candidates from the population with offsprings
+		self.deleteNLastReplacement(offsprings)
+
+		# Sort new population by fitness
+		self.population = self.sortCandidatesByFitness(self.population)
+
+
+	def GA_Tuner(self):
+		numGen = 0
+		avg_fitness = self.getAvgFitness()
+
+		print("Gen:", numGen, "AvgFitness:", self.getAvgFitness())
+		if Popln_Size <= 20:
+			self.printPopln()
+
+		while (numGen < Max_Generations and avg_fitness < Max_Fitness):
+			self.generateNewPopulation()
+			numGen += 1
+			print("Gen:", numGen, "AvgFitness:", self.getAvgFitness())
+			if Popln_Size <= 20:
+				self.printPopln()
+
+
+test1 = GA_ParametersGenerator()
+test1.GA_Tuner()

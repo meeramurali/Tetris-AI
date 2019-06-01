@@ -20,8 +20,9 @@ colors = {
 }
 
 
+
 class TetrisAI:
-	def __init__(self, heightWt=0.5, linesWt=1, holesWt=0.5, bumpinessWt=1):
+	def __init__(self, ai_params=[-0.5, 1, -0.5, -1]):
 		self.board = Board(BoardNumRows, BoardNumCols)
 		self.piece_generator = Random_Piece_Generator()
 		self.curr_piece_list = [self.piece_generator.nextPiece()]
@@ -31,11 +32,11 @@ class TetrisAI:
 		self.board_ht = BoardNumRows * CellSize
 		self.window_width = self.board_width + (SideBarCols * CellSize)
 		self.window_ht = self.board_ht
-		self.heightWt = heightWt
-		self.linesWt = linesWt
-		self.holesWt = holesWt
-		self.bumpinessWt = bumpinessWt
-		self.ai_agent = AI_Player(self.heightWt, self.linesWt, self.holesWt, self.bumpinessWt)
+		self.heightWt = ai_params[0]
+		self.linesWt = ai_params[1]
+		self.holesWt = ai_params[2]
+		self.bumpinessWt = ai_params[3]
+		self.ai_agent = AI_Player(ai_params)
 
 
 	def center_msg(self, msg):
@@ -159,6 +160,31 @@ class TetrisAI:
 		pygame.quit()
 
 
+	def run_trainMode(self, max_moves):
+		total_moves = 0
+		while not self.board.isFull() and total_moves < max_moves:
+			self.curr_piece_list.pop(0)
+			self.curr_piece_list.append(self.piece_generator.nextPiece())
+
+			# Get next best piece position
+			self.curr_piece = self.ai_agent.select_move(self.board, self.curr_piece_list)
+
+			# Drop piece
+			reached_bottom = False
+			while not reached_bottom and self.curr_piece is not None:
+				if not self.curr_piece.moveDown(self.board):
+					reached_bottom = True
+
+			# Add current piece to board
+			if self.curr_piece is not None:
+				self.board.addPiece(self.curr_piece)
+
+			# Clear lines
+			self.score += self.board.clearLines()
+
+			total_moves += 1
+
+
 	# This function can be used to draw the board or an individual piece
 	# by passing in the corresponding cells as the color matrix
 	# Note: grid_row, grid_col refer to row# and col# of top left cell in matrix
@@ -196,6 +222,8 @@ class TetrisAI:
 # test.board.addPiece(p2)
 # test.run()
 
-test1 = TetrisAI(0.5, 0.9, 0.1, 0.5)
-# print(test1.ai_agent.best(test1.board, test1.curr_piece_list))
-test1.run()
+# test1 = TetrisAI([-0.5, 0.75, -0.3, -0.2])
+# # print(test1.ai_agent.best(test1.board, test1.curr_piece_list))
+# test1.run()
+# print(test1.score)
+
