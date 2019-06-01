@@ -1,13 +1,44 @@
 from Candidate import *
 import math
 
+TestCaseNum = '1a'
 Popln_Size = 20
 Max_Generations = 1000
 Mutation_percent = 5
-Num_Games = 2		# to compute fitness for each candidate
-Max_Moves = 200		# to compute fitness for each candidate
-N_percent = 30		# for delete-n-last replacement. n will be N_percent of Popln_Size
+Num_Games = 2			# to compute fitness for each candidate
+Max_Moves = 200			# to compute fitness for each candidate
+N_percent = 30			# for delete-n-last replacement. n will be N_percent of Popln_Size
+Selection = 'RW' 		# TS: Tournament selection, RW: Roulette wheel
+Crossover = 'Cross1'	# [a1, b1, c1, d1] X [a2, b2, c2, d2] = ([a1, b1, c1, d1] * fitness1) + ([a2, b2, c2, d2] * fitness2)
 Max_Fitness = Num_Games * Max_Moves * 4 / 10
+
+
+def writeExpParams(file):
+	file.write("--------------------------------------------------------------------\n")
+	file.write("TestCaseNum: " + str(TestCaseNum) + "\n")
+	file.write("Popln_Size: " + str(Popln_Size) + "\n")
+	file.write("Max_Generations: " + str(Max_Generations) + "\n")
+	file.write("Mutation_percent: " + str(Mutation_percent) + "\n")
+	file.write("Num_Games: " + str(Num_Games) + "\n")
+	file.write("Max_Moves: " + str(Max_Moves) + "\n")
+	file.write("N_percent: " + str(N_percent) + "\n")
+	file.write("Selection: " + Selection + "\n")
+	file.write("Crossover: " + Crossover + "\n")
+	file.write("--------------------------------------------------------------------\n\n")
+
+
+def printExpParams():
+	print("--------------------------------------------------------------------")
+	print("TestCaseNum: " + str(TestCaseNum))
+	print("Popln_Size: " + str(Popln_Size))
+	print("Max_Generations: " + str(Max_Generations))
+	print("Mutation_percent: " + str(Mutation_percent))
+	print("Num_Games: " + str(Num_Games))
+	print("Max_Moves: " + str(Max_Moves))
+	print("N_percent: " + str(N_percent))
+	print("Selection: " + Selection)
+	print("Crossover: " + Crossover)
+	print("--------------------------------------------------------------------\n")
 
 
 class GA_ParametersGenerator:
@@ -61,6 +92,21 @@ class GA_ParametersGenerator:
 		return self.population[best1]
 
 
+	def rouletteWheelSelection(self):
+		# sum of fitnesses of all individuals in population
+		sumFitness = np.sum(x.get_fitness() for x in self.population)
+
+		# random number 0 <= r < 1
+		rand = random.uniform(0, 1)
+
+		partSum = 0
+		for ind in self.population:
+			prob_ind = ind.get_fitness()/sumFitness
+			partSum += prob_ind
+			if rand < partSum:
+				return ind
+
+
 	def deleteNLastReplacement(self, N_offsprings):
 		N = len(N_offsprings)
 		self.population = self.population[0:-N] + N_offsprings
@@ -73,8 +119,12 @@ class GA_ParametersGenerator:
 
 		# Repeat until we have N offsprings
 		while num_offsprings < N:
-			# Select parents via tournament selection
-			parent1, parent2 = self.tournamentSelection()
+			# Select parents via specified selection mech.
+			if Selection == 'RW':
+				parent1 = self.rouletteWheelSelection()
+				parent2 = self.rouletteWheelSelection()
+			else: # 'TS'
+				parent1, parent2 = self.tournamentSelection()
 
 			# Create offspring via crossover
 			offspring = Candidate(parent1.crossover(parent2), num_games=Num_Games, max_moves=Max_Moves)
@@ -99,20 +149,37 @@ class GA_ParametersGenerator:
 
 
 	def GA_Tuner(self):
-		numGen = 0
-		avg_fitness = self.getAvgFitness()
+		results_filename = "testCase" + TestCaseNum + ".txt"
+		f = open(results_filename, 'w')
+		writeExpParams(f)
 
-		print("Gen:", numGen, "AvgFitness:", self.getAvgFitness())
+		numGen = 0
+		f.write("Gen no.\tAvgFit\tBestCandidate\tBestFitness\n")
+		self.recordResults(f, numGen)
+
+		while (numGen < Max_Generations and self.getAvgFitness() < Max_Fitness):
+			self.generateNewPopulation()
+			
+			numGen += 1
+			self.recordResults(f, numGen)
+
+		f.close()
+
+
+	def recordResults(self, file, numGen):
+		# Write to file
+		file.write(str(numGen) + "\t" \
+			+ str(self.getAvgFitness()) + "\t"  \
+			+ str(self.population[0]) + "\t"  \
+			+ str(self.population[0].get_fitness()) + "\n")
+		# Print to stdout
+		print("Gen:", numGen, "AvgFitness:", self.getAvgFitness(), \
+			"BestCandidate:", self.population[0], \
+			"(fitness:", self.population[0].get_fitness(), ")")
 		if Popln_Size <= 20:
 			self.printPopln()
 
-		while (numGen < Max_Generations and avg_fitness < Max_Fitness):
-			self.generateNewPopulation()
-			numGen += 1
-			print("Gen:", numGen, "AvgFitness:", self.getAvgFitness())
-			if Popln_Size <= 20:
-				self.printPopln()
 
-
+printExpParams()
 test1 = GA_ParametersGenerator()
 test1.GA_Tuner()
