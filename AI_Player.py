@@ -3,11 +3,11 @@ from Piece import *
 
 class AI_Player:
 	
-	def __init__(self, heightWt, linesWt, holesWt, bumpinessWt):
-		self.heightWt = heightWt
-		self.linesWt = linesWt
-		self.holesWt = holesWt
-		self.bumpinessWt = bumpinessWt
+	def __init__(self, params):
+		self.heightWt = params[0]
+		self.linesWt = params[1]
+		self.holesWt = params[2]
+		self.bumpinessWt = params[3]
 		
 	def get_best_move(self, board, workingPieces, currentPieceIndex):
 		best = None
@@ -32,10 +32,10 @@ class AI_Player:
 				
 				score = 0
 				if currentPieceIndex == len(workingPieces) - 1:
-					score = - self.heightWt * temp_board.get_aggregate_ht() \
+					score = + self.heightWt * temp_board.get_aggregate_ht() \
 						+ self.linesWt * temp_board.get_num_lines() \
-						- self.holesWt * temp_board.get_holes_count() \
-						- self.bumpinessWt * temp_board.get_bumpiness()
+						+ self.holesWt * temp_board.get_holes_count() \
+						+ self.bumpinessWt * temp_board.get_bumpiness()
 				else:
 					best_move = self.get_best_move(temp_board, workingPieces, currentPieceIndex + 1)
 					score = best_move['score']
