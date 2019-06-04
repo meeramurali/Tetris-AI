@@ -2,13 +2,13 @@ from Candidate import *
 import math
 
 TestCaseNum = '1a'
-Popln_Size = 20
-Max_Generations = 1000
+Popln_Size = 100
+Max_Generations = 500
 Mutation_percent = 5
-Num_Games = 2			# to compute fitness for each candidate
+Num_Games = 5			# to compute fitness for each candidate
 Max_Moves = 200			# to compute fitness for each candidate
 N_percent = 30			# for delete-n-last replacement. n will be N_percent of Popln_Size
-Selection = 'RW' 		# TS: Tournament selection, RW: Roulette wheel
+Selection = 'TS' 		# TS: Tournament selection, RW: Roulette wheel
 Crossover = 'Cross1'	# [a1, b1, c1, d1] X [a2, b2, c2, d2] = ([a1, b1, c1, d1] * fitness1) + ([a2, b2, c2, d2] * fitness2)
 Max_Fitness = Num_Games * Max_Moves * 4 / 10
 

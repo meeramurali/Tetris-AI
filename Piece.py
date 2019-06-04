@@ -51,7 +51,7 @@ class Piece:
         for row in range(len(self.cells)):
             for col in range(len(self.cells[row])):
                 pos_row = self.row + row
-                pos_col = self.col - 1
+                pos_col = self.col + col - 1
                 if self.cells[row][col] != 0 :
                     if not (pos_col >= 0 and board.cells[pos_row][pos_col] == 0):
                         return False
@@ -64,7 +64,7 @@ class Piece:
         for row in range(len(self.cells)):
             for col in range(len(self.cells[row])):
                 pos_row = self.row + row
-                pos_col = self.col + 1
+                pos_col = self.col + col + 1
                 if self.cells[row][col] != 0 :
                     if not (pos_col >= 0 and board.cells[pos_row][pos_col] == 0):
                         return False
