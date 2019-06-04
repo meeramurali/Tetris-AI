@@ -126,15 +126,16 @@ class Board:
 			for col in range(len(piece.cells[row])):
 				pos_row = piece.row + row
 				pos_col = piece.col + col
+				
+				if piece.cells[row][col] != 0:
+					# if out of bounds of grid, piece is invalid
+					if (pos_row < 0 or pos_row >= self.rows) \
+						or (pos_col < 0 or pos_col >= self.cols):
+						return False
 
-				# if out of bounds of grid, piece is invalid
-				if (pos_row < 0 or pos_row >= self.rows) \
-					or (pos_col < 0 or pos_col >= self.cols):
-					return False
-
-				# if cell is already filled in board, piece is invalid
-				elif self.cells[pos_row][pos_col] != 0:
-					return False
+					# if cell is already filled in board, piece is invalid
+					elif self.cells[pos_row][pos_col] != 0:
+						return False
 
 		return True
 
