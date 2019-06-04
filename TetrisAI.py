@@ -222,8 +222,8 @@ class TetrisAI:
 # test.board.addPiece(p2)
 # test.run()
 
-test1 = TetrisAI()
-test1.run()
+# test1 = TetrisAI()
+# test1.run()
 # print(test1.score)
 # # print(test1.ai_agent.best(test1.board, test1.curr_piece_list))
 
