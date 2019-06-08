@@ -7,6 +7,6 @@
 - [x] RandomPieceGenerator *(randomly generates next piece during game)*
 ### The AI
 - [x] AI_Player *(selects next move based on best score using given set of paremeters)*
-- [ ] GA_ParametersGenerator *(generates optimal set of parameters using a genetic algorithm)*
+- [x] GA_ParametersGenerator *(generates optimal set of parameters using a genetic algorithm)*
 ### Putting both parts together
 - [ ] TetrisAI *(Simulates game being played by the AI; uses pygame to render components)*
