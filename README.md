@@ -9,3 +9,7 @@
 - [x] GA_ParametersGenerator *(generates optimal set of parameters using a genetic algorithm)*
 ### Putting both parts together
 - [x] TetrisAI *(Simulates game being played by the AI; uses pygame to render components)*
+
+
+#
+This project was inspired by the following study: https://codemyroad.wordpress.com/2013/04/14/tetris-ai-the-near-perfect-player/ 
